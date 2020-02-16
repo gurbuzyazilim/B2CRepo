@@ -1,0 +1,260 @@
+{% extends 'base.html' %}
+{% block pagetitle %}{{ block.super }} - Kullanıcı Listesi {% endblock %}
+{% block body  %}
+<div id="divListe" class="container-fluid">
+	<div class="w-box">
+		<div class="w-box-header">
+			<div align="Center">Kullanıcı Listesi Ekranı</div>
+		</div>
+		<div class="w-box-content" style="overflow: auto;width: 100%;height: 100%;">
+			<table class="table table-bordered" id="datatable">
+				<thead>
+					<tr>
+						<th>Adı</th>
+						<th>Soyadı</th>
+						<th>Tipi</th>
+						<th>Durumu</th>
+						<th>İşlemler</th>
+					</tr>
+				</thead>
+				<tbody>
+				{% for kullanicilar in sqlKullanicilarListesi %}
+					<tr id="{{ kullanicilar.KullaniciAdi }}">
+						<td>{{ kullanicilar.Adi }}</td>
+						<td>{{ kullanicilar.Soyadi }}</td>
+						<td>{{ kullanicilar.Tipi }}</td>
+						{% if kullanicilar.Durumu == True %}
+						<td>Aktif</td>
+						{% else %}
+						<td>Pasif</td>
+						{% endif %}
+						<td>
+							<button class="btn btn-info fa fa-search" onclick="Detay('{{ kullanicilar.KullaniciAdi }}');"></button>
+							<button class="btn btn-warning fa fa-pencil" onclick="Guncelle('{{ kullanicilar.KullaniciAdi }}');"></button>
+							<button class="btn btn-danger fa fa-trash" onclick="Sil('{{ kullanicilar.KullaniciAdi }}');"></button>
+						</td>
+					</tr>
+				{% endfor %}	
+				</tbody>
+			</table>
+		</div>
+	</div>
+</div>
+<div id="divDetay" class="container-fluid" style="display: none;">
+	<div class="w-box" style="margin-top: 1%; margin-bottom: 1%;">
+		<button class="btn btn-warning fa fa-long-arrow-left" style="margin-bottom: 5px;width: 25%" onclick="GeriDetay();" title="Geri"></button>
+		<div class="w-box-header">
+            <div align="Center">
+                <span>Kullanıcı Detay Ekranı</span>
+            </div>
+		</div>
+		<div class="w-box-content">
+			<table class="table table-bordered">
+                <tr>
+                	<th>Kullanıcı Adı</th>
+					<td id="kullaniciAdiDetay"></td>	
+                </tr>
+                <tr>
+                	<th>Adı</th>
+					<td id="adiDetay"></td>	
+                </tr>
+                <tr>
+                	<th>Soyadı</th>
+					<td id="soyadiDetay"></td>	
+                </tr>
+                <tr>
+                    <th>Parola</th>
+					<td>*********</td>	
+                </tr>
+                <tr>
+                	<th>Email</th>
+					<td id="emailDetay"></td>
+                </tr>
+                <tr>
+                	<th>Tel</th>
+					<td id="telDetay"></td>
+                </tr>
+                <tr>
+                	<th>Adres</th>
+					<td id="adresDetay"></td>
+                </tr>
+                <tr>
+                	<th>Tipi</th>
+					<td id="tipiDetay"></td>
+                </tr>
+                <tr>
+                	<th>Durumu</th>
+                    <td id="durumuDetay"></td>
+                </tr>
+                <tr>
+                    <th>Son Giriş</th>
+					<td id="sonGirisDetay"></td>
+                </tr>
+                <tr>
+                    <th>Kayıt Tarihi</th>
+					<td id="kayitTarihiDetay"></td>
+                </tr>
+                <tr>
+                	<th>Kayıt Yapan</th>
+					<td id="kayitYapanDetay"></td>
+                </tr>
+                <tr>
+                	<th>Düzeltme Tarihi</th>
+					<td id="duzeltmeTarihiDetay"></td>	
+                </tr>
+                <tr>
+                    <th>Düzeltme Yapan</th>
+					<td id="duzeltmeYapanDetay"></td>	
+                </tr>
+            </table>             
+		</div>
+	</div>
+</div>
+<div id="divGuncelle" class="container-fluid" style="display: none;">
+	<div class="w-box" style="margin-top: 1%; margin-bottom: 1%;">
+		<div class="w-box-header">
+	        <div align="Center">
+	            <span>Kullanıcı Düzenleme Ekranı</span>
+	        </div>
+		</div>
+		<div class="w-box-content">
+			<table class="table table-bordered">
+				<tr>
+					<th>Kullanıcı Tipi</th>	
+					<td>
+						<select id="tipiGuncelle" key="" class="form-control requiredHg">
+							<option value="">Seçiniz</option>
+							{% for kullaniciTipi in sqlKullaniciTipi %}
+								<option value="{{ kullaniciTipi.KullaniciTipiKodu }}">{{ kullaniciTipi.KullaniciTipi }}</option>
+								{% endfor %}
+						</select>
+					</td>
+				</tr>
+				<tr>	
+					<th>Kullanıcı Durumu</th>
+					<td>
+						<select id="durumuGuncelle" class="form-control requiredHg">
+							<option value="0">Pasif</option>
+							<option value="1">Aktif</option>
+						</select>
+					</td>
+				</tr>
+				<tr>
+					<td colspan="2">
+						<button class="btn btn-warning fa fa-long-arrow-left" style="width:48%;" onclick="GeriGuncelle();" title="Geri"></button>
+						<button class="btn btn-success fa fa-save" style="width:50%;" onclick="KaydetGuncelle();" title="Kaydet"></button>
+					</td>
+				</tr>		
+			</table>
+		</div>
+	</div>
+</div>
+<script type="text/javascript">
+function Detay(argument){
+	$.ajax({
+        type: "post",
+        url: "",
+        data: {
+        	"ajaxDetay" : argument,
+        csrfmiddlewaretoken: "{{ csrf_token }}"
+        },
+        dataType: "json",
+        success: function(Veri){
+        	$("#divListe").css("display","none");
+        	$("#divDetay").css("display","block");
+			$("#kullaniciAdiDetay").html(Veri.ajaxKullaniciAdi);
+			$("#adiDetay").html(Veri.ajaxAdi);
+			$("#soyadiDetay").html(Veri.ajaxSoyadi);
+			$("#emailDetay").html(Veri.ajaxEmail);
+			$("#telDetay").html(Veri.ajaxTel);
+			$("#adresDetay").html(Veri.ajaxAdres);
+			$("#tipiDetay").html(Veri.ajaxTipi);
+			$("#durumuDetay").html(Veri.ajaxDurumu);
+			$("#sonGirisDetay").html(Veri.ajaxSonGiris);
+			$("#kayitTarihiDetay").html(Veri.ajaxKayitTarihi);
+			$("#kayitYapanDetay").html(Veri.ajaxKayitYapan);
+			$("#duzeltmeTarihiDetay").html(Veri.ajaxDuzeltmeTarihi);
+			$("#duzeltmeYapanDetay").html(Veri.ajaxDuzeltmeYapan);
+        }, 
+        error: function(Hata) {
+            alert("Hata !");
+        }
+    });
+};
+function Guncelle(argument){
+	if(confirm("Kullanıcı Güncellensin mi ?") == true){
+		$.ajax({
+	        type: "post",
+	        url: "",
+	        data: {
+	        	"ajaxGuncelle" : argument,
+	        csrfmiddlewaretoken: "{{ csrf_token }}"
+	        },
+	        dataType: "json",
+	        success: function(Veri){
+	        	$("#divListe").css("display","none");
+	        	$("#divGuncelle").css("display","block");
+	        	$("#tipiGuncelle").attr("key",Veri.ajaxIdGuncelle);
+				$("#tipiGuncelle").val(Veri.ajaxTipiGuncelle);
+				$("#durumuGuncelle").val(Veri.ajaxDurumuGuncelle);
+	        }, 
+	        error: function(Hata) {
+	            alert(" !");
+	        }
+	    });
+	};
+};
+function KaydetGuncelle(){
+	if(confirm("Kaydedilsin mi ?") == true){
+		$.ajax({
+	        type: "post",
+	        url: "",
+	        data: {
+	        	"ajaxIdKaydet"     : $("#tipiGuncelle").attr("key"),
+	        	"ajaxTipiKaydet"   : $("#tipiGuncelle").val(),
+	        	"ajaxDurumuKaydet" : $("#durumuGuncelle").val(),
+	        csrfmiddlewaretoken: "{{ csrf_token }}"
+	        },
+	        dataType: "json",
+	        success: function(Veri){
+	        	if(Veri.ajaxMesaj == "Kayıt Başarılı Bir Şekilde Güncellendi !"){
+	        		alert(Veri.ajaxMesaj);
+	        		location = "/kullanicilar/listele";
+	        	}else{alert(Veri.ajaxMesaj);};
+	        }, 
+	        error: function(Hata) {
+	            alert("Hata !");
+	        }
+	    });
+	};
+};
+function Sil(argument){
+	if(confirm("Kullanıcı Silinsin mi ?") == true){
+		$.ajax({
+	        type: "post",
+	        url: "",
+	        data: {
+	        	"ajaxSil" : argument,
+	        csrfmiddlewaretoken: "{{ csrf_token }}"
+	        },
+	        dataType: "json",
+	        success: function(Veri){
+	        	alert(Veri.ajaxMesaj);
+	        	$("#"+argument+"").fadeOut().remove();
+	        }, 
+	        error: function(Hata) {
+	            alert("Hata !");
+	        }
+	    });
+	};
+};
+function GeriDetay(){
+	$("#divDetay").css("display","none");
+	$("#divListe").css("display","block");
+};
+function GeriGuncelle(){
+	$("#divGuncelle").css("display","none");
+	$("#divListe").css("display","block");
+};
+</script>
+{% endblock %}

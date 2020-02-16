@@ -1,0 +1,16 @@
+{% extends 'base.html' %}
+{% block pagetitle %}{{ block.super }} - Ürün Listesi {% endblock %}
+{% block body  %}
+<div class="container-fluid">
+	<div class="row">
+		{% for urun in sqlUrunler %}
+		<div class="col-md-3" style="margin-top: 0.5%;">
+			<img src="{{urun.IlanResmi1.url}}" class="img-responsive img-thumbnail"  style="height: 250px; width: 100%;">
+			<div align="Center">
+				<a href="/urunler/{{urun.IlanNo}}/detay">{{urun.IlanBasligi}}</a>
+			</div>
+		</div>
+		{% endfor %}
+	</div>   
+</div>
+{% endblock %}

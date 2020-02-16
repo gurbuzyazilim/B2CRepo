@@ -1,0 +1,283 @@
+{% extends 'base.html' %}
+{% block pagetitle %}{{ block.super }} - Ürün Ekle {% endblock %}
+{% block body  %}
+<div class="container-fluid">
+	<form method="POST" enctype="multipart/form-data">
+		{% csrf_token %}
+		<div class="row">
+			<div class="col-md-6" style="margin-top: 0.5%;">
+				<div class="w-box">
+					<div class="w-box-header">
+						Ürün Ana Özellikleri
+					</div>
+					<div class="w-box-content">
+						<table class="table table-bordered">
+							<tr>
+								<th>Kategori</th>
+								<td>
+									<select id="kategori" name="Kategori" class="form-control">
+										<option value="" selected="">Seçiniz</option>
+										{% for tanimlama in sqlUrunTanimlamalari %}
+										<option value="{{ tanimlama.Kodu }}">{{ tanimlama.Icerik }}</option>
+										{% endfor %}
+									</select>
+								</td>
+							</tr>	
+							<tr>
+								<th>Alt Kategori</th>
+								<td>
+									<select id="altKategori" name="AltKategori" class="form-control">
+										<option value="" selected="">Seçiniz</option>
+									</select>
+								</td>
+							</tr>
+							<tr>
+								<th>Marka</th>
+								<td>
+									<select id="marka" name="Marka" class="form-control">
+										<option value="" selected="">Seçiniz</option>
+									</select>
+								</td>
+							</tr>
+							<tr>	
+								<th>Model</th>
+								<td>
+									<select id="model" name="Model" class="form-control">
+										<option value="" selected="">Seçiniz</option>
+									</select>
+								</td>
+							</tr>
+							<tr>
+								<th>İlan No</th>
+								<td>
+									<input type="text" id="ilanNo" name="IlanNo" class="form-control">
+								</td>
+							</tr>
+							<tr>	
+								<th>İlan Başlığı</th>
+								<td>
+									<input type="text" id="ilanBasligi" name="IlanBasligi" class="form-control">
+								</td>
+							</tr>
+							<tr>
+								<th>Fiyat</th>
+								<td>
+									<input type="text" id="fiyat" name="Fiyat" class="form-control">
+								</td>
+							</tr>
+							<tr>	
+								<th>Miktar</th>
+								<td>
+									<input type="number" id="miktar" name="Miktar" class="form-control">
+								</td>
+							</tr>
+						</table>
+					</div>		
+				</div>
+			</div>	
+			<div class="col-md-6">
+				<div class="w-box">
+					<div class="w-box-header">
+						Ürün Alt Özelliği Ekle
+					</div>
+					<div class="w-box-content">	
+						<table class="table table-bordered">
+							<tr>
+								<th>Ürün Özelliği Başlığı</th>
+								<td>
+									<input type="text" id="urunOzBaslik" class="form-control">
+								</td>
+							</tr>
+							<tr>
+								<th>Ürün Özelliği</th>
+								<td>
+									<input type="text" id="urunOzellik" class="form-control">
+								</td>
+							</tr>
+							<tr>
+								<td colspan="2">
+									<input type="button" value="Kaydet" class="btn btn-success" style="width: 100%;" onclick="OzellikKaydet();">
+								</td>
+							</tr>
+						</table>
+					</div>
+				</div>
+				<div class="w-box">
+					<div class="w-box-header">
+						Ürün Alt Özellikleri
+					</div>
+					<div class="w-box-content">	
+						<table class="table table-bordered">
+							<tbody id="urunOzellikleri"></tbody>
+						</table>
+					</div>
+				</div>
+			</div>
+			<div class="col-md-12">
+				<div class="w-box">
+					<div class="w-box-header">
+						Ürün Resimleri
+					</div>
+					<div class="w-box-content">
+						<table class="table table-bordered">
+							<tr>
+								<th>İlan Resmi 1</th>
+								<td>
+									{{ sqlUrunlerForm.IlanResmi1 }}
+								</td>
+								<th>İlan Resmi 2</th>
+								<td>
+									{{ sqlUrunlerForm.IlanResmi2 }}
+								</td>
+							</tr>
+							<tr>
+								<th>İlan Resmi 3</th>
+								<td>
+									{{ sqlUrunlerForm.IlanResmi3 }}
+								</td>
+								<th>İlan Resmi 4</th>
+								<td>
+									{{ sqlUrunlerForm.IlanResmi4 }}
+								</td>
+							</tr>
+							<tr>
+								<th>İlan Resmi 5</th>
+								<td>
+									{{ sqlUrunlerForm.IlanResmi5 }}
+								</td>
+								<th>İlan Resmi 6</th>
+								<td>
+									{{ sqlUrunlerForm.IlanResmi6 }}
+								</td>
+							</tr>
+							<tr>
+								<th>İlan Resmi 7</th>
+								<td>
+									{{ sqlUrunlerForm.IlanResmi7 }}
+								</td>
+								<th>İlan Resmi 8</th>
+								<td>
+									{{ sqlUrunlerForm.IlanResmi8 }}
+								</td>
+							</tr>
+							<tr>
+								<th>İlan Resmi 9</th>
+								<td>
+									{{ sqlUrunlerForm.IlanResmi9 }}
+								</td>
+								<th>İlan Resmi 10</th>
+								<td>
+									{{ sqlUrunlerForm.IlanResmi10 }}
+								</td>
+							</tr>
+							<tr>
+								<td colspan="4">
+									<input type="submit" value="Gönder" class="btn btn-success" style="width: 100%;">
+								</td>
+							</tr>
+						</table>
+					</div>	
+				</div>		
+			</div>
+		</div>		
+	</form>
+</div>
+<script type="text/javascript">
+$("#kategori").change(function(){
+	if($(this).val() != ""){
+		$.ajax({
+	        type: "post",
+	        url: "",
+	        data: {
+	        	"ajaxKategori" : $(this).val(),
+	        csrfmiddlewaretoken: "{{ csrf_token }}"
+	        },
+	        dataType: "json",
+	        success: function(Veri){
+	        	var varAltKategori  = Veri.ajaxAltKategoriListesi
+	        	for(var i=0;i<varAltKategori.length;i++){
+	        		$('#altKategori').append('\
+						<option value="'+varAltKategori[i][1]+'">'+varAltKategori[i][2]+'</option>\
+	            	')
+	        	};
+	        }, 
+	        error: function(Hata) {
+	            alert("Hata !");
+	        }
+	    });
+	};
+});
+$("#altKategori").change(function(){
+	if($(this).val() != ""){
+		$.ajax({
+	        type: "post",
+	        url: "",
+	        data: {
+	        	"ajaxAltKategori" : $(this).val(),
+	        csrfmiddlewaretoken: "{{ csrf_token }}"
+	        },
+	        dataType: "json",
+	        success: function(Veri){
+	        	var varMarka  = Veri.ajaxMarkaListesi
+	        	for(var i=0;i<varMarka.length;i++){
+	        		$('#marka').append('\
+						<option value="'+varMarka[i][1]+'">'+varMarka[i][2]+'</option>\
+	            	')
+	        	};
+	        }, 
+	        error: function(Hata) {
+	            alert("Hata !");
+	        }
+	    });
+	};
+});
+$("#marka").change(function(){
+	if($(this).val() != ""){
+		$.ajax({
+	        type: "post",
+	        url: "",
+	        data: {
+	        	"ajaxMarka" : $(this).val(),
+	        csrfmiddlewaretoken: "{{ csrf_token }}"
+	        },
+	        dataType: "json",
+	        success: function(Veri){
+	        	var varModel  = Veri.ajaxModelListesi
+	        	for(var i=0;i<varModel.length;i++){
+	        		$('#model').append('\
+						<option value="'+varModel[i][1]+'">'+varModel[i][2]+'</option>\
+	            	')
+	        	};
+	        }, 
+	        error: function(Hata) {
+	            alert("Hata !");
+	        }
+	    });
+	};
+});
+function OzellikKaydet(){
+	$.ajax({
+        type: "post",
+        url: "",
+        data: {
+        	"ajaxIlanNo"   : $("#ilanNo").val(),
+        	"ajaxOzBaslik" : $("#urunOzBaslik").val(),
+        	"ajaxOzellik"  : $("#urunOzellik").val(),
+        csrfmiddlewaretoken: "{{ csrf_token }}"
+        },
+        dataType: "json",
+        success: function(Veri){
+        	$("#urunOzellikleri").append('\
+        		<tr>\
+	        		<th>'+Veri.ajaxOzBaslik+'</th>\
+	        		<td>'+Veri.ajaxOzellik+'</td>\
+	        	</tr>	\
+        	');
+        }, 
+        error: function(Hata) {
+            alert("Hata !");
+        }
+    });
+};
+</script>
+{% endblock %}

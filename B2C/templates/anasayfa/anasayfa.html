@@ -1,0 +1,136 @@
+{% extends 'base.html' %}
+{% block pagetitle %}{{ block.super }} - Anasayfa {% endblock %}
+{% block body  %}
+<div class="container-fluid">
+	<div class="row">
+		<div class="col-md-3 col-sm-3 col-xs-12" style="height: 360px;width: 19%; overflow: auto; margin-left: 1%; border: 1px solid #dfe6e9; border-radius: 5px;">
+			<div class="row" align="Center">
+				<label>Kategori</label>
+				<select id="kategori" class="form-control">
+					<option value="" selected="">Seçiniz</option>
+					{% for tanimlama in sqlTanimlamalar %}
+					<option value="{{ tanimlama.Kodu }}">{{ tanimlama.Icerik }}</option>
+					{% endfor %}
+				</select>
+			</div>
+			<div class="row" align="Center">
+				<label>Alt Kategori</label>
+				<select id="altKategori" class="form-control">
+					<option value="" selected="">Seçiniz</option>
+				</select>
+			</div>
+			<div class="row" align="Center">
+				<label>Marka</label>
+				<select id="marka" class="form-control">
+					<option value="" selected="">Seçiniz</option>
+				</select>
+			</div>
+			<div class="row" align="Center">
+				<label>Model</label>
+				<select id="model" class="form-control">
+					<option value="" selected="">Seçiniz</option>
+				</select>
+			</div>
+		</div>
+		<div class="col-md-9 col-sm-9 col-xs-12" style="height:360px;width:80%;">
+			{% for resim in mansetResimleri %}
+				<img src="{{resim.MansetResmi}}" class="img-responsive img-thumbnail">
+			{% endfor %}
+		</div>
+	</div>
+	<div class="w-box" style="margin-top: 1%;">
+		<div class="w-box-header">
+			<div align="Center"><span>Editörün Seçtikleri<span/></div>
+		</div>
+		<div class="w-box-content">
+			<div class="row">
+				{% for resim in vitrinResimleri %}
+					<div class="col-md-3 col-sm-4 col-xs-6" style="height: 200px; margin-bottom: 3%;">
+						<img src="{{resim.VitrinResmi}}" class="img-responsive img-thumbnail">
+						<div align="Center">
+							<a href="/urunler/{{resim.IlanNo}}/detay">{{resim.IlanBasligi}}</a>
+						</div>
+					</div>
+				{% endfor %}
+			</div>		
+		</div>	
+	</div>		
+</div>
+<script type="text/javascript">
+$("#kategori").change(function(){
+	if($(this).val() != ""){
+		$.ajax({
+	        type: "post",
+	        url: "",
+	        data: {
+	        	"ajaxKategori" : $(this).val(),
+	        csrfmiddlewaretoken: "{{ csrf_token }}"
+	        },
+	        dataType: "json",
+	        success: function(Veri){
+	        	var varAltkategoriListesi  = Veri.ajaxAltKategoriListesi
+	        	for(var i=0;i<varAltkategoriListesi.length;i++){
+	        		$('#altKategori').append('\
+						<option value="'+varAltkategoriListesi[i][1]+'">'+varAltkategoriListesi[i][2]+'</option>\
+	            	')
+	        	};
+	        }, 
+	        error: function(Hata) {
+	            alert("Hata !");
+	        }
+	    });
+	};
+});
+$("#altKategori").change(function(){
+	if($(this).val() != ""){
+		$.ajax({
+	        type: "post",
+	        url: "",
+	        data: {
+	        	"ajaxAltKategori" : $(this).val(),
+	        csrfmiddlewaretoken: "{{ csrf_token }}"
+	        },
+	        dataType: "json",
+	        success: function(Veri){
+	        	var varMarkaListesi  = Veri.ajaxMarkaListesi
+	        	for(var i=0;i<varMarkaListesi.length;i++){
+	        		$('#marka').append('\
+						<option value="'+varMarkaListesi[i][1]+'">'+varMarkaListesi[i][2]+'</option>\
+	            	')
+	        	};
+	        }, 
+	        error: function(Hata) {
+	            alert("Hata !");
+	        }
+	    });
+	};
+});
+$("#marka").change(function(){
+	if($(this).val() != ""){
+		$.ajax({
+	        type: "post",
+	        url: "",
+	        data: {
+	        	"ajaxMarka" : $(this).val(),
+	        csrfmiddlewaretoken: "{{ csrf_token }}"
+	        },
+	        dataType: "json",
+	        success: function(Veri){
+	        	var varModelListesi  = Veri.ajaxModelListesi
+	        	for(var i=0;i<varModelListesi.length;i++){
+	        		$('#model').append('\
+						<option value="'+varModelListesi[i][1]+'">'+varModelListesi[i][2]+'</option>\
+	            	')
+	        	};
+	        }, 
+	        error: function(Hata) {
+	            alert("Hata !");
+	        }
+	    });
+	};
+});
+$("#model").change(function(){
+	location = "/urunler/"+$(this).val()+"";
+});
+</script>
+{% endblock %}

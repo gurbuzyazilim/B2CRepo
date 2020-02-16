@@ -1,0 +1,85 @@
+{% extends 'base.html' %}
+{% block pagetitle %}{{ block.super }} - Sepet {% endblock %}
+{% block body  %}
+<div class="container-fluid">
+	<div class="row" id="sepetDolu" key="{{key1}}">
+		<div class="col-xs-12 col-sm-8 col-md-8">
+			{% for sepetUrun in sepetListesi %}
+			<div id="{{sepetUrun.0}}" class="row">
+			
+				<div class="col-xs-12 col-sm-4 col-md-4" align="Center">
+			        <img src="{{sepetUrun.2}}" class="img-responsive img-thumbnail "  style="height: 100px;">
+			        <a onclick="SepetDetay('{{sepetUrun.0}}')">{{sepetUrun.1}}</a>
+			    </div>
+			    <div class="col-xs-12 col-sm-4 col-md-4" align="Center"> 
+			    	<label>{{sepetUrun.3}}</label>
+			    </div>
+			    <div class="col-xs-12 col-sm-4 col-md-4" align="Center">
+			        <input type="button" value="Sepetten Çıkar" class="btn btn-danger" onclick="SepettenCıkar('{{sepetUrun.0}}');">
+				</div>
+			</div>	
+			{% endfor %}
+		</div>
+		<div class="col-xs-12 col-sm-4 col-md-4">
+			<div class="row">
+				<div class="col-xs-12 col-sm-6 col-md-6">
+					<label>Kargo Ücreti</label>
+				</div>
+				<div class="col-xs-12 col-sm-6 col-md-6">
+					<label>0,00</label>
+				</div>
+			</div>
+			<div class="row">
+				<div class="col-xs-12 col-sm-6 col-md-6">
+					<label>Toplam Tutar</label>
+				</div>
+				<div class="col-xs-12 col-sm-6 col-md-6">
+					<label id="topTut">{{ toplamTutar }}</label>
+				</div>
+			</div>
+			<div class="row">
+				<div class="col-xs-12 col-sm-12 col-md-12">
+					<div align="Center">
+						<input class="btn btn-primary" type="button" value="Siparişi Tamamla" style="width: 100%;" onclick="SiparisiTamamla();">
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+	<div id="sepetBos" align="Center" style="display: none; margin-bottom: 30%;">
+		<h1>Henüz Sepete Birşey Eklemediniz !</h1>
+	</div>
+</div>
+<script type="text/javascript">
+$(document).ready(function(){
+	if($("#sepetDolu").attr("key") == "0"){
+		$("#sepetDolu").css("display","none");
+		$("#sepetBos").css("display","block");
+	};
+});
+function SepettenCıkar(parametre){
+	$.ajax({
+	    type: "post",
+	    url: "",
+	    data: {
+	        "ajaxSil" : parametre,
+	    csrfmiddlewaretoken: "{{ csrf_token }}"
+	    },
+	    dataType: "json",
+	    success: function(Veri){
+	    	$("#topTut").html(Veri.ajaxTopTut);
+	        $('#'+Veri.ajaxMesaj+'').fadeOut().remove();
+	    }, 
+	    error: function(Hata) {
+	        alert("Hata !");
+	    }
+	});
+};
+function SepetDetay(parametre){
+	location = "/urunler/"+parametre+"/detay";
+};
+function SiparisiTamamla(){
+	location = "/urunler/teslimatOdeme";
+};
+</script>
+{% endblock %}

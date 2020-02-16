@@ -1,0 +1,133 @@
+{% extends 'base.html' %}
+{% block pagetitle %}{{ block.super }} - Tanımlamalar {% endblock %}
+{% block body  %}
+<div class="container-fluid" style="margin-top: 1%;margin-bottom: 1%;">
+	<div class="w-box">
+		<div class="w-box-header">
+			Anasayfa İşlemleri
+		</div>
+		<div class="w-box-content">
+			<div style="border: 2px solid #dfe6e9 ;margin-bottom: 1%; border-radius: 5px;">	
+				<div class="row">
+					<div class="col-md-3" style="vertical-align: center;">
+						<label>Manşet Resmi İçin İlan No Giriniz</label>
+					</div>
+					<div class="col-md-9">
+						<input type="text" id="mansetRIlanNo" class="form-control">
+					</div>
+				</div>
+				<div class="row" id="manResDiv"></div>
+			</div>	
+			<div style="border: 2px solid #dfe6e9 ;margin-bottom: 1%; border-radius: 5px;">	
+				<div class="row">
+					<div class="col-md-3">
+						<label>Vitrin Resmi İçin İlan No Giriniz</label>
+					</div>
+					<div class="col-md-9">
+						<input type="text" id="vitrinRIlanNo" class="form-control">
+					</div>
+				</div>
+				<div class="row" id="vitResDiv"></div>
+			</div>
+		</div>
+	</div>    
+</div>
+<script type="text/javascript">
+$("#mansetRIlanNo").keyup(function(){
+	if($(this).val() != ""){
+		$.ajax({
+	        type: "post",
+	        url: "",
+	        data: {
+	        	"ajaxMRINo" : $(this).val(),
+	        csrfmiddlewaretoken: "{{ csrf_token }}"
+	        },
+	        dataType: "json",
+	        success: function(Veri){
+	        	$('#manResDiv div').fadeOut().remove();
+	        	var resimListesi  = Veri.ajaxResimListesi
+	        	for(var resim=0;resim<resimListesi.length;resim++){
+	        		$('#manResDiv').append('\
+	        			<div class="col-md-3" align="Center" style="height:200px; margin-bottom:2%; margin-top:2%;">\
+							<img src="'+resimListesi[resim]+'" id="manset'+resim+'" class="img-responsive img-thumbnail">\
+							<a onclick="MansetResim('+[resim]+','+Veri.ajaxIlanNo+');">Manşet Resmi Olarak Ayarla<a/>\
+						</div>\
+	            	');
+	        	};
+	        }, 
+	        error: function(Hata) {
+	            alert("Hata !");
+	        }
+	    });
+	};
+});
+function MansetResim(parametre1,parametre2){
+	if(confirm("Manşet Resmi Olarak Ayarlansın mı ?") == true ){
+		$.ajax({
+	        type: "post",
+	        url: "",
+	        data: {
+	        	"ajaxManIlNo"   : parametre2,
+	        	"ajaxManRes" : $("#manset"+parametre1+"").attr("src"),
+	        csrfmiddlewaretoken: "{{ csrf_token }}"
+	        },
+	        dataType: "json",
+	        success: function(Veri){
+	        	alert(Veri.ajaxMesaj);
+	        }, 
+	        error: function(Hata) {
+	            alert("Hata !");
+	        }
+	    });
+	};
+};
+$("#vitrinRIlanNo").keyup(function(){
+	if($(this).val() != ""){
+		$.ajax({
+	        type: "post",
+	        url: "",
+	        data: {
+	        	"ajaxMRINo" : $(this).val(),
+	        csrfmiddlewaretoken: "{{ csrf_token }}"
+	        },
+	        dataType: "json",
+	        success: function(Veri){
+	        	$('#vitResDiv div').fadeOut().remove();
+	        	var resimListesi  = Veri.ajaxResimListesi
+	        	for(var resim=0;resim<resimListesi.length;resim++){
+	        		$('#vitResDiv').append('\
+	        			<div class="col-md-3" align="Center" style="height:200px; margin-bottom:2%; margin-top:2%;">\
+							<img src="'+resimListesi[resim]+'" id="vitrin'+resim+'" class="img-responsive img-thumbnail">\
+							<a onclick="VitrinResim('+[resim]+','+Veri.ajaxIlanNo+')">Vitrin Resmi Olarak Ayarla</a>\
+						</div>\
+	            	');
+	        	};
+	        }, 
+	        error: function(Hata) {
+	            alert("Hata !");
+	        }
+	    });
+	};
+});
+function VitrinResim(parametre1,parametre2){
+	if(confirm("Vitrin Resmi Olarak Ayarlansın mı ?") == true ){
+		$.ajax({
+	        type: "post",
+	        url: "",
+	        data: {
+	        	"ajaxVitIlNo"  : parametre2,
+	        	"ajaxVitRes"   : $("#vitrin"+parametre1+"").attr("src"),
+	        csrfmiddlewaretoken: "{{ csrf_token }}"
+	        },
+	        dataType: "json",
+	        success: function(Veri){
+	        	alert(Veri.ajaxMesaj)
+	        }, 
+	        error: function(Hata) {
+	            alert("Hata !");
+	        }
+	    });
+	};
+};
+</script>
+{% endblock %}

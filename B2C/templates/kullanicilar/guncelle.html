@@ -1,0 +1,117 @@
+{% extends 'base.html' %}
+{% block pagetitle %}{{ block.super }} - Güncelle {% endblock %}
+{% block body  %}
+<div class="container-fluid">
+	<div class="w-box">
+		<div class="row">
+			<div class="col-md-12">
+				<div class="w-box-header">
+					<div align="Center">
+						<span>Güncelleme Ekranı</span>
+					</div>
+				</div>
+			</div>
+		</div>
+		<div class="w-box-content">
+			<div class="row">
+				<div class="col-md-2">
+					<label>Kullanıcı Adı</label>
+				</div>
+				<div class="col-md-4">
+					<input type="text" id="kullaniciAdi" class="form-control requiredHg" value="{{key.KullaniciAdi}}">
+				</div>
+				<div class="col-md-2">
+					<label>Adı</label>
+				</div>
+				<div class="col-md-4">
+					<input type="text" id="adi" class="form-control requiredHg" value="{{key.Adi}}">
+				</div>
+			</div>
+			<div class="row">
+				<div class="col-md-2">
+					<label>Soyadı</label>
+				</div>
+				<div class="col-md-4">
+					<input type="text" id="soyadi" class="form-control requiredHg" value="{{key.Soyadi}}">
+				</div>
+				<div class="col-md-2">
+					<label>Email</label>
+				</div>
+				<div class="col-md-4">
+					<input type="text" id="kullaniciEmail" class="form-control requiredHg" value="{{key.Email}}">
+				</div>	
+			</div>
+			<div class="row">
+				<div class="col-md-2">
+					<label>Tel</label>
+				</div>
+				<div class="col-md-4">
+					<input type="text" id="kullaniciTel" class="form-control requiredHg" value="{{key.Tel}}">
+				</div>
+				<div class="col-md-2">
+					<label>Adres</label>
+				</div>
+				<div class="col-md-4">
+					<textarea id="adres" class="form-control requiredHg">{{key.Adres}}</textarea>
+				</div>	
+			</div>
+			<div class="row">
+				<div class="col-md-2">
+					<label>Parola</label>
+				</div>
+				<div class="col-md-4">
+					<input type="password" id="kullaniciParola" class="form-control requiredHg" value="{{key.Parola}}">
+				</div>
+				<div class="col-md-2">
+					<label>Parola Tekrarı</label>
+				</div>
+				<div class="col-md-4">
+					<input type="password" id="kullaniciParolaD" class="form-control requiredHg" value="{{key.Parola}}">
+				</div>	
+			</div>
+			<div class="row">
+				<div class="col-md-12">
+					<button class="btn btn-success fa fa-save" style="width: 100%;" onclick="Kaydet();" title="Kaydet"></button>
+				</div>	
+			</div>
+		</div>
+	</div>
+</div>
+<script type="text/javascript">
+function Kaydet(){
+	$.ajax({
+        type: "post",
+        url: "",
+        data: {
+        	"ajaxKullaniciAdi" : $("#kullaniciAdi").val(),
+        	"ajaxAdi"          : $("#adi").val(),
+        	"ajaxSoyadi"       : $("#soyadi").val(),
+        	"ajaxEmail"        : $("#kullaniciEmail").val(),
+        	"ajaxTel"          : $("#kullaniciTel").val(),
+        	"ajaxAdres"        : $("#adres").val(),
+        	"ajaxParola"       : $("#kullaniciParola").val(),
+        	"ajaxParolaD"      : $("#kullaniciParolaD").val(),
+        csrfmiddlewaretoken: "{{ csrf_token }}"
+        },
+        dataType: "json",
+        success: function(Veri){
+        	if(Veri.ajaxMesaj == true){
+        		location = "/kullanicilar/listele";
+        	}else{alert(Veri.ajaxMesaj);};
+        }, 
+        error: function(Hata) {
+            alert("Hata !");
+        }
+    });
+};
+$('#kullaniciParolaD').keyup(function(){
+	if($('#kullaniciParola').val() && $('#kullaniciParolaD').val() != ""){
+		if($('#kullaniciParola').val() != $('#kullaniciParolaD').val()){
+			$('#kullaniciParolaD').css("border-color","#ff0505");
+		}else{
+			$('#kullaniciParolaD').css("border-color","#5cb85c");
+		};
+    };
+});
+</script>
+{% endblock %}

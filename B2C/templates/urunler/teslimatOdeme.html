@@ -1,0 +1,248 @@
+{% extends 'base.html' %}
+{% block pagetitle %}{{ block.super }} - Teslimat/Ödeme Bilgileri {% endblock %}
+{% block body  %}
+<div class="container-fluid">
+	<div class="row">
+		<div class="col-md-12">
+			<div class="row">
+				<div class="col-md-12" align="Center">
+					<label>Teslimat Bilgileri</label>
+				</div>
+			</div>
+			<div class="row">
+				<div class="col-md-2">
+					<label>İsim</label>
+				</div>
+				<div class="col-md-4">
+					<input type="text" id="isim" class="form-control">
+				</div>
+				<div class="col-md-2">
+					<label>Soyisim</label>
+				</div>
+				<div class="col-md-4">
+					<input type="text" id="soyisim" class="form-control">
+				</div>
+			</div>
+			<div class="row">
+				<div class="col-md-2">
+					<label>Telefon</label>
+				</div>
+				<div class="col-md-4">
+					<input type="text" id="telefon" class="form-control">
+				</div>
+				<div class="col-md-2">
+					<label>Email</label>
+				</div>
+				<div class="col-md-4">
+					<input type="email" id="email" class="form-control">
+				</div>
+			</div>
+			<div class="row">
+				<div class="col-md-2">
+					<label>Adres</label>
+				</div>
+				<div class="col-md-4">
+					<textarea id="adres" class="form-control"></textarea>
+				</div>
+				<div class="col-md-2">
+					<label>Ödeme Tipi</label>
+				</div>
+				<div class="col-md-4">
+					<label id="odemeTipi" val="" style="display: none;"></label>
+					<label>&nbsp;&nbsp;
+						<input type="radio" id="odemeTipiKapida" name="odemeTipi" value="Kapıda Odeme" onclick="KapidaOdeme();">
+						&nbsp;&nbsp;Kapıda Ödeme
+					</label>
+					<label>&nbsp;&nbsp;
+						<input type="radio" id="odemeTipiHavale" name="odemeTipi" value="Havale" onclick="HavaleEFT();">
+						&nbsp;&nbsp;Havale/EFT
+					</label>
+				</div>	
+			</div>
+			<div id="odemeBilgileri" style="display: none;">
+				<div class="row">
+					<div class="col-md-12">
+						<label>Havale/Eft Seçeneğini Seçen Müşterilerimizin Sipariş Numarasını Dekontun Açıklama Kısmına Yazmaları Önemle Rica Olunur !</label>
+					</div>
+				</div>
+				<div class="row">
+					<div class="col-md-2">
+						<label>Iban</label>
+					</div>
+					<div class="col-md-4">
+						<label>TR0343112233445001</label>
+					</div>
+					<div class="col-md-2">
+						<label>Hesap No</label>
+					</div>
+					<div class="col-md-4">
+						<label>0343 11223344 5001</label>
+					</div>
+				</div>
+				<div class="row">
+					<div class="col-md-2">
+						<label>Banka</label>
+					</div>
+					<div class="col-md-4">
+						<label>Ziraat Bankası</label>
+					</div>
+					<div class="col-md-2">
+						<label>İsim Soyisim</label>
+					</div>
+					<div class="col-md-4">
+						<label>İsim Soyisim</label>
+					</div>
+				</div>
+			</div>
+			<div class="row">
+				<div class="col-md-12">
+					<button class="btn btn-success" style="width: 100%;" onclick="SiparisiOnayla();">Siparişi Onayla</button>
+				</div>
+			</div>
+		</div>
+	</div>
+	<div class="modal fade" id="myModal" tabindex="-1" style="display:none;">
+		<div class="modal-dialog">
+	    	<div class="modal-content">
+	      		<div class="modal-header">
+	        		<button type="button" class="close closeX"><span aria-hidden="true">&times;</span></button>
+	       			 <h4 class="modal-title">Bilgilerin Doğruluğunu Onaylıyor musunuz ?</h4>
+	      		</div>
+	      		<div class="modal-body" style="overflow: auto;height: 200px;">
+	        		<table id="onizlemeUrunler" class='table table-bordered'>
+	        			<thead></thead>
+	        			<tbody></tbody>
+	        		</table>
+	        		<table id="onizlemeTTutar" class='table table-bordered'>
+	        		</table>
+	        		<table id="onizlemeTeslimat" class='table table-bordered'>
+	        			<thead></thead>
+	        			<tbody></tbody>
+	        		</table>
+	    		</div>
+		      	<div class="modal-footer">
+		      		<table class="table">
+		      			<tr>
+		      				<td align="left">
+		      					<button type="button" class="btn btn-default closeX">Geri Dön</button>
+		      				</td>
+		      				<td align="right">
+		      					<button type="button" class="btn btn-success" onclick="Onaylıyorum();">Onaylıyorum</button>
+		      				</td>
+		      			</tr>
+		      		</table>
+		      	</div>
+	    	</div>
+	    </div>
+	</div>
+</div>
+<script type="text/javascript">
+$(".closeX").click(function(){
+	$(".detayTabloTr").remove()
+	$("#myModal").css("display","none");
+	$("#myModal").attr("class","modal fade");
+});
+$("[name='odemeTipi']").click(function(){
+	$("#odemeTipi").html($(this).val());
+	$("#odemeTipi").val($(this).val());
+});
+function HavaleEFT(){
+	$("#odemeBilgileri").css("display","block");
+};
+function KapidaOdeme(){
+	$("#odemeBilgileri").css("display","none");
+};
+function SiparisiOnayla(){
+	$.ajax({
+        type: "post",
+        url: "",
+        data: {
+            "ajaxVeri" : true,
+        csrfmiddlewaretoken: "{{ csrf_token }}"
+        },
+        dataType: "json",
+        success: function(Veri){
+            $("#myModal").css("display","block");
+			$("#myModal").attr("class","modal fade in");
+			$("#onizlemeUrunler tbody tr").fadeOut().remove();
+			$("#onizlemeUrunler thead tr").fadeOut().remove();
+			$("#onizlemeTTutar tr").fadeOut().remove();
+			$("#onizlemeTeslimat tbody tr").fadeOut().remove();
+			$("#onizlemeTeslimat thead tr").fadeOut().remove();
+			$("#onizlemeTeslimat thead").append('\
+				<tr>\
+					<th>İsim</th>\
+					<th>Soyisim</th>\
+					<th>Telefon</th>\
+					<th>Email</th>\
+					<th>Adres</th>\
+					<th>Ödeme Tipi</th>\
+				</tr>\
+			');
+			$("#onizlemeTeslimat tbody").append('\
+				<tr>\
+					<th>'+$("#isim").val()+'</th>\
+					<th>'+$("#soyisim").val()+'</th>\
+					<th>'+$("#telefon").val()+'</th>\
+					<th>'+$("#email").val()+'</th>\
+					<th>'+$("#adres").val()+'</th>\
+					<th>'+$("#odemeTipi").val()+'</th>\
+				</tr>\
+			');
+			$("#onizlemeTTutar").append('\
+				<tr>\
+					<th>Toplam Tutar</th>\
+					<td align="right"><label>'+Veri.ajaxToplamTutar+'</label></td>\
+				</tr>\
+			');
+			var sepetAppend = ""
+			var sepettekiUrunler = Veri.ajaxSepettekiUrunler;
+			$("#onizlemeUrunler thead").append('\
+				<tr>\
+					<th>Marka</th>\
+					<th>Model</th>\
+					<th>İlan Başlığı</th>\
+					<th>Fiyat</th>\
+				</tr>\
+			')
+			for(var urun=0;urun < sepettekiUrunler.length;urun++){
+				$("#onizlemeUrunler tbody").append('\
+					<tr>\
+						<td>'+sepettekiUrunler[urun][0]+'</td>\
+						<td>'+sepettekiUrunler[urun][1]+'</td>\
+						<td>'+sepettekiUrunler[urun][2]+'</td>\
+						<td>'+sepettekiUrunler[urun][3]+'</td>\
+					</tr>\
+				')
+			};
+        }, 
+        error: function(Hata) {
+            alert("Hata !");
+        }
+    });
+};
+function Onaylıyorum(){
+	$.ajax({
+        type: "post",
+        url: "",
+        data: {
+            "ajaxIsim"      : $("#isim").val(),
+            "ajaxSoyisim"   : $("#soyisim").val(),
+            "ajaxTelefon"   : $("#telefon").val(),
+            "ajaxEmail"     : $("#email").val(),
+            "ajaxAdres"     : $("#adres").val(),
+            "ajaxOdemeTipi" : $("#odemeTipi").val(),
+        csrfmiddlewaretoken: "{{ csrf_token }}"
+        },
+        dataType: "json",
+        success: function(Veri){
+        	alert(Veri.ajaxMesaj);
+            location = Veri.ajaxLocation;
+        }, 
+        error: function(Hata) {
+            alert("Hata !");
+        }
+    });
+};	
+</script>
+{% endblock %}

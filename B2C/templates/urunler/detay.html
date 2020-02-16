@@ -1,0 +1,210 @@
+{% extends 'base.html' %}
+{% block pagetitle %}{{ block.super }} - Detay {% endblock %}
+{% block body  %}
+<div class="container-fluid">
+	<div class="row">
+		<div class="col-xs-12 col-sm-8 col-md-8">
+			<div class="row">
+				<div class="col-md-12">
+					<div class="row" style="height: 300px;">
+						<img id="mansetResim" src="{{resimListesi.0}}" class="img-responsive img-thumbnail">
+					</div>
+					<div class="row marginHG">
+						{% for resim in resimListesi %}
+						<div class="col-md-3" style="height: 90px;">
+							<img src="{{resim}}" class="img-responsive img-thumbnail hgSlayt">
+						</div>
+						{% endfor %}
+					</div>
+				</div>
+			</div>
+			<div class="row marginHG">
+				<div class="col-md-12">
+					<div class="row">
+						<div class="col-md-3">
+							<label>Yorum</label>	
+						</div>	
+						<div class="col-md-9">
+							<textarea id="yorumYap" class="form-control"></textarea>
+						</div>
+					</div>
+					<div class="row">
+						<div class="col-md-3">
+							<label>İsim</label>
+						</div>	
+						<div class="col-md-9">
+							<input type="text" id="isim" class="form-control">
+						</div>
+					</div>
+					<div class="row">
+						<div class="col-md-3">
+							<label>Soyisim</label>
+						</div>	
+						<div class="col-md-9">
+							<input type="text" id="soyisim" class="form-control">
+						</div>
+					</div>
+					<div class="row">
+						<div class="col-md-3">
+							<label>Email</label>
+						</div>	
+						<div class="col-md-9">
+							<input type="email" id="email" class="form-control">
+						</div>
+					</div>
+					<div class="row">
+						<div class="col-md-12">
+							<input type="button" value="Yorum Yap" class="btn btn-success" onclick="YorumYap();" style="width: 100%;">
+						</div>
+					</div>	
+				</div>
+			</div>
+			<div class="row marginHG">
+				<div class="col-md-12" align="Center">
+					<label>Yorumlar</label>
+				</div>
+				{% for yorum in sqlYorumlar %}
+				<div class="col-md-12" style="background-color: #00d2d3">
+					<span>{{ yorum.Yorum }}</span>
+				</div>
+				<div class="col-md-12" style="background-color: #00d2d3" align="right">
+					<label>{{ yorum.Isim }}&nbsp;{{ yorum.Soyisim }}</label>
+				</div>
+				<div class="col-md-12" style="background-color: #ff6b6b"></div>
+				{% endfor %}
+			</div>	
+		</div>
+		<div class="col-xs-12 col-sm-4 col-md-4">
+			<div class="row marginHG">
+				<div class="col-md-12">
+					<div class="row">
+						<div class="col-md-12" align="Center">
+							<label>Özellikler</label>
+						</div>
+					</div>
+					<div class="row">
+						<div class="col-md-6">
+							<label>İlan No</label>
+						</div>
+						<div class="col-md-6">
+							<label>{{ sqlUrun.IlanNo }}</label>
+						</div>
+					</div>
+					<div class="row">
+						<div class="col-md-6">
+							<label>İlan Başlığı</label>
+						</div>
+						<div class="col-md-6">
+							<label>{{ sqlUrun.IlanBasligi }}</label>
+						</div>
+					</div>	
+					<div class="row">
+						<div class="col-md-6">
+							<label>Marka</label>
+						</div>
+						<div class="col-md-6">
+							<label>{{ sqlUrun.Marka }}</label>
+						</div>
+					</div>	
+					<div class="row">
+						<div class="col-md-6">
+							<label>Model</label>
+						</div>
+						<div class="col-md-6">
+							<label>{{ sqlUrun.Model }}</label>
+						</div>
+					</div>	
+					<div class="row">
+						<div class="col-md-6">
+							<label>Fiyat</label>
+						</div>
+						<div class="col-md-6">
+							<label>{{ sqlUrun.Fiyat }}</label>
+						</div>
+					</div>
+					<div class="row">	
+						<div class="col-md-6">
+							<label>Miktar</label>
+						</div>
+						<div class="col-md-6">
+							<label>{{ sqlUrun.Miktar }}</label>
+						</div>
+					</div>
+					{% for urunOzellikleri in sqlUrunOzellikleri %}
+					<div class="row">
+						<div class="col-md-6">
+						 	<label>{{urunOzellikleri.UrunOzBaslik}}</label>
+						 </div>
+						 <div class="col-md-6">
+						 	<label>{{urunOzellikleri.UrunOzellik}}</label>
+						 </div>
+					</div>
+					{% endfor %}
+				</div>					
+			</div>
+			<div class="row marginHG">
+				<div class="col-md-3">
+					<label>Miktar</label>
+				</div>
+				<div class="col-md-3">
+					<input type="number" id="miktar" class="form-control">
+				</div>
+				<div class="col-md-6">
+					<input type="button" value="Sepete Ekle" onclick="SepeteEkle('{{ sqlUrun.IlanNo }}');" class="btn btn-info" style="width: 100%;">
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+<script type="text/javascript">
+$(".hgSlayt").click(function(){
+	$("#mansetResim").attr("src",$(this).attr("src"))
+});
+function YorumYap(){
+	if($("#yorumYap").val() != ""){
+		$.ajax({
+	        type: "post",
+	        url: "",
+	        data: {
+	        	"ajaxYorum"   : $("#yorumYap").val(),
+	        	"ajaxIsim"    : $("#isim").val(),
+	        	"ajaxSoyisim" : $("#soyisim").val(),
+	        	"ajaxEmail"   : $("#email").val(),
+	        csrfmiddlewaretoken: "{{ csrf_token }}"
+	        },
+	        dataType: "json",
+	        success: function(Veri){
+	        	alert(Veri.ajaxMesaj)
+	        }, 
+	        error: function(Hata) {
+	            alert("Hata !");
+	        }
+	    });
+	};
+};
+function SepeteEkle (parametre){
+	if($("#miktar").val() != ""){
+		$.ajax({
+	        type: "post",
+	        url: "",
+	        data: {
+	            "ajaxSepetEkle" : parametre,
+	            "ajaxMiktar"    : $("#miktar").val(),
+	        csrfmiddlewaretoken: "{{ csrf_token }}"
+	        },
+	        dataType: "json",
+	        success: function(Veri){
+	        	if(Veri.ajaxMesaj == false){
+	        		alert("Bu Ürün Tükenmiş !");
+	        	}else{
+	        		alert("Ürün Sepete Eklendi !");
+	        	};
+	        }, 
+	        error: function(Hata) {
+	            alert("Hata !");
+	        }
+	    });
+	}else{alert("Lütfen Miktar Belirtiniz !")};
+};
+</script>
+{% endblock %}

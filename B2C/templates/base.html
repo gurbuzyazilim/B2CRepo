@@ -1,0 +1,26 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" http-equiv="Content-Type" content="text/html; charset=iso-8859-9;width=device-width, inital scale=1">
+    <title>{% block pagetitle %} B2C {% endblock %}</title>
+    <!-- Ana Stil -->
+    <link rel="stylesheet" href='{% static "css/hgm.css" %}'/>
+    <!-- Bootstrap-->
+    <link rel="stylesheet" href='{% static "bootstrap/bootstrap.css" %}'>
+    <!-- Font Awasome Icon -->
+    <link rel="stylesheet" href="{% static 'fa/css/font-awesome.css' %}" />
+    
+    <script src= '{% static "js/jquery.min.js" %}'></script>
+    <script src= '{% static "bootstrap/bootstrap.js" %}'></script>
+    <script src= '{% static "datatables/js/jquery.datatables.min.js" %}'></script>
+    <script src= '{% static "datatables/js/datatables.bootstrap.js" %}'></script>
+</head>
+<body style="margin-top: 7%;">
+    {% include 'header.html' %}
+    {% include 'messages.html' %}
+    {% block body %}
+    {% endblock %}
+    {% include 'footer.html' %}
+</body>
+</html>

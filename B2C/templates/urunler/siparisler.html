@@ -1,0 +1,81 @@
+{% extends 'base.html' %}
+{% block pagetitle %}{{ block.super }} - Siparişler {% endblock %}
+{% block body  %}
+<div class="container-fluid">
+	{% for siparis in sqlSiparis %}
+	<div class="row">		
+		<div class="col-md-2">
+			<label>Kullanıcı Adı</label>
+		</div>
+		<div class="col-md-2">
+			{{ siparis.KullaniciAdi }}
+		</div>
+		<div class="col-md-2">
+			<label>Sipariş No</label>
+		</div>
+		<div class="col-md-2">
+			{{ siparis.SiparisNo }}
+		</div>
+		{% if siparis.IsCanceled != True and siparis.IsVerified != True %}
+		<div class="col-md-2">
+			<input type="button" value="İptal Et" onclick="Iptal('{{ siparis.SiparisNo }}');" class="btn btn-danger">
+		</div>
+		<div class="col-md-2">
+			<input type="button" value="Onayla" onclick="Onayla('{{ siparis.SiparisNo }}');" class="btn btn-success">
+		</div>
+		{% else %}
+			{% if siparis.IsCanceled == True %}
+				<div class="col-md-2">
+					<label>Bu Sipariş İptal Edilmiş</label>
+				</div>
+			{% endif %}
+			{% if siparis.IsVerified == True %}
+				<div class="col-md-2">
+					<label>Bu Sipariş Onaylanmış</label>
+				</div>
+			{% endif %}
+		{% endif %}	
+	</div>
+	{% endfor %}
+</div>
+<script type="text/javascript">
+function Iptal(parametre){
+	if(confirm("İptal Edilsin mi ?") == true){
+		$.ajax({
+	        type: "post",
+	        url: "",
+	        data: {
+	        	"ajaxIptal" : parametre,
+	        csrfmiddlewaretoken: "{{ csrf_token }}"
+	        },
+	        dataType: "json",
+	        success: function(Veri){
+	        	alert(Veri.ajaxMesaj);
+	        }, 
+	        error: function(Hata) {
+	            alert("Hata !");
+	        }
+	    });
+	};
+};
+function Onayla(parametre){
+	if(confirm("Onaylansın mi ?") == true){
+		$.ajax({
+	        type: "post",
+	        url: "",
+	        data: {
+	        	"ajaxOnayla" : parametre,
+	        csrfmiddlewaretoken: "{{ csrf_token }}"
+	        },
+	        dataType: "json",
+	        success: function(Veri){
+	        	alert(Veri.ajaxMesaj);
+	        }, 
+	        error: function(Hata) {
+	            alert("Hata !");
+	        }
+	    });
+	};    
+};
+</script>
+{% endblock %}

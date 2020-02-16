@@ -1,0 +1,160 @@
+<div class="navbar navbar-inverse navbar-fixed-top" role="banner">
+    <div class="container-fluid">
+        <div class="navbar-header">
+            <button class="navbar-toggle" type="button" data-toggle="collapse" data-target=".navbar-collapse">
+                <span class="sr-only"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+        </div>
+        <nav class="collapse navbar-collapse" role="navigation">
+			<ul class="nav navbar-nav navbar-left">
+				<li>
+				  <table>
+				    <tr>
+				      <td>
+				        <i class="fa fa-home" aria-hidden="true" style="padding: 4px 20px;font-size: 20px; color: #fff"></i>
+				      </td>
+				    </tr>
+				    <tr>
+				      <td align="Center">
+				          <a href="{% url 'anasayfa:anasayfa' %}" style="color: #fff;">Anasayfa</a>
+				      </td>
+				    </tr>
+				  </table>
+				</li>
+				{% if key.Tipi == "01"  %}
+				<li>
+                    <table id="dropdownMenu1" data-toggle="dropdown">
+                      	<tr>
+				      		<td>
+				        		<i class="fa fa-reorder" aria-hidden="true" style="padding: 4px 20px;font-size: 20px; color: #fff"></i>
+				      		</td>
+				    	</tr>
+				    	<tr>
+				      		<td align="Center">
+				          		<a style="color: #fff;">İşlemler</a>
+				      		</td>
+				    	</tr>
+                    </table>
+                    <ul class="dropdown-menu" aria-labelledby="dropdownMenu1">
+                    	<li>
+						    <a class="fa fa-exchange" href="{% url 'urunler:urunekle' %}">&nbsp;Ürün Ekle</a>
+				  		</li>
+				  		<li>
+                            <a class="fa fa-exchange" href="{% url 'urunler:tanimlamalar' %}">&nbsp;Ürün Tanımlamaları</a>
+                        </li>
+				  		<li>
+                            <a class="fa fa-users" href="{% url 'kullanicilar:listele' %}">&nbsp;Kullanıcılar</a>
+                        </li>
+                        <li>
+                            <a class="fa fa-users" href="{% url 'kullanicilar:tanimlamalar' %}">&nbsp;Kullanıcı Tanımlamaları</a>
+                        </li>
+                        <li>
+						    <a class="fa fa-exchange" href="{% url 'anasayfa:tanimlamalar' %}">&nbsp;Anasayfa Tanımlamaları</a>
+				  		</li>
+				  		<li>
+						    <a class="fa fa-exchange" href="{% url 'urunler:siparisler' %}">&nbsp;Siparişler</a>
+				  		</li>
+                    </ul>
+                </li>
+                {% endif %}
+			</ul>
+			<ul class="nav navbar-nav navbar-right">
+				<li>
+				  <table>
+				    <tr>
+				      <td>
+				        <i id="sepet" class="fa fa-cart-plus" aria-hidden="true" style="padding: 4px 16px;font-size: 20px; color: #fff"></i>
+
+				      </td>
+				    </tr>
+				    <tr>
+				      <td align="Center">
+				          <a onclick="Sepet();" style="color: #fff;">Sepet</a>
+				          
+				      </td>
+				    </tr>
+				  </table>
+				</li>
+				{% if key == False  %}
+				<li>
+				  <table>
+				    <tr>
+				      <td>
+				        <i class="fa fa-sign-in" aria-hidden="true" style="padding: 4px 16px;font-size: 20px; color: #fff"></i>
+				      </td>
+				    </tr>
+				    <tr>
+				      <td align="Center">
+				          <a href="{% url 'kullanicilar:giris' %}" style="color: #fff;">Giriş Yap</a>
+				      </td>
+				    </tr>
+				  </table>
+				</li>
+				<li>
+				  <table>
+				    <tr>
+				      <td>
+				        <i class="fa fa-user-plus" aria-hidden="true" style="padding: 4px 16px;font-size: 20px; color: #fff"></i>
+				      </td>
+				    </tr>
+				    <tr>
+				      <td align="Center">
+				          <a href="{% url 'kullanicilar:kayit' %}" style="color: #fff;">Üye Ol</a>
+				      </td>
+				    </tr>
+				  </table>
+				</li>
+				{% endif %}
+				{% if key.IsActivated == True %}
+				<li>
+                    <table id="dropdownMenu1" data-toggle="dropdown">
+                      	<tr>
+				      		<td>
+				        		<i class="fa fa-user-circle" aria-hidden="true" style="padding: 4px 20px;font-size: 20px; color: #fff"></i>
+				      		</td>
+				    	</tr>
+				    	<tr>
+				      		<td align="Center">
+				          		<a style="color: #fff;">Hesabım</a>
+				      		</td>
+				    	</tr>
+                    </table>
+                    <ul class="dropdown-menu" aria-labelledby="dropdownMenu1">
+                        <li>
+						    <a class="fa fa-exchange" href="{{ key.get_absolute_url }}">&nbsp;Kullanıcı Bilgilerim</a>
+				  		</li>
+                        <li>
+						    <a class="fa fa-exchange" href="">&nbsp;Siparişlerim</a>
+				  		</li>
+                        <li>
+                            <a class="fa fa-exchange" href="">&nbsp;Favorilerim</a>
+                        </li>
+                    </ul>
+                </li>
+				<li>
+					<table>
+						<tr>
+							<td>
+								<i class="fa fa-sign-out" aria-hidden="true" style="padding: 4px 16px;font-size: 20px; color: #fff"></i>
+							</td>
+						</tr>
+						<tr>
+							<td align="Center">
+								<a href="{% url 'kullanicilar:cikis' %}" style="color: #fff;">Çıkış</a>
+							</td>
+						</tr>
+					</table>
+				</li>
+				{% endif %}
+			</ul>
+        </nav>
+    </div>
+</div>
+<script type="text/javascript">
+	function Sepet(){
+		location = "/urunler/sepet";
+	};
+</script>
